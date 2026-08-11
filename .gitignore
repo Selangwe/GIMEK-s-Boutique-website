@@ -1,0 +1,14 @@
+# Client brief — local only, not published
+New Text Document.txt
+
+# Windows / OneDrive noise
+desktop.ini
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
