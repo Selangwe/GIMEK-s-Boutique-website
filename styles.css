@@ -134,6 +134,11 @@ ul,ol,dl,dd{margin:0;padding:0;list-style:none}
   box-shadow:0 0 0 0 rgba(46,139,87,.55);animation:pulse 2.6s infinite;
 }
 .status--lt{color:rgba(243,234,220,.75)}
+/* Set by initStatus() outside opening hours — a still, muted dot. */
+.status.is-closed i{background:var(--sand);box-shadow:none;animation:none}
+.status.is-closed{color:var(--ink-3)}
+.status--lt.is-closed{color:rgba(243,234,220,.55)}
+.status--lt.is-closed i{background:rgba(243,234,220,.4)}
 @keyframes pulse{70%{box-shadow:0 0 0 7px rgba(46,139,87,0)}100%{box-shadow:0 0 0 0 rgba(46,139,87,0)}}
 
 /* ═══ IMAGE FRAMES & PLACEHOLDER SYSTEM ══════════════════
@@ -203,22 +208,14 @@ ul,ol,dl,dd{margin:0;padding:0;list-style:none}
 }
 .nav.is-stuck .nav__in{padding-top:.95rem;padding-bottom:.95rem}
 
-.brand{display:flex;align-items:center;gap:.75rem;margin-right:auto}
-.brand__mark{
-  width:2.2rem;height:2.2rem;flex:none;display:grid;place-items:center;
-  border:1px solid var(--ember);color:var(--ember);
-  font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1;
-  transition:background .4s var(--ease),color .4s var(--ease);
+/* The lockup is a raster asset, so it is sized by height and left at its own
+   colours — 2.6rem is the smallest size at which both words stay crisp. */
+.brand{display:flex;align-items:center;margin-right:auto}
+.brand img{
+  height:2.6rem;width:auto;
+  transition:opacity .4s var(--ease);
 }
-.brand:hover .brand__mark{background:var(--ember);color:var(--paper)}
-.brand__name{
-  font-family:var(--sans);font-weight:500;font-size:.82rem;
-  letter-spacing:.26em;line-height:1.15;text-transform:uppercase;
-}
-.brand__name em{
-  display:block;font-family:var(--serif);font-style:italic;font-weight:300;
-  font-size:.86rem;letter-spacing:.08em;text-transform:none;color:var(--gold);
-}
+.brand:hover img{opacity:.72}
 .nav__links{display:flex;gap:2.1rem}
 .nav__links a{
   position:relative;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;
@@ -265,6 +262,7 @@ ul,ol,dl,dd{margin:0;padding:0;list-style:none}
 @keyframes menuIn{to{opacity:1;transform:none}}
 .menu__links i{font-family:var(--sans);font-style:normal;font-size:.66rem;letter-spacing:.2em;color:var(--ember)}
 .menu__foot{border-top:1px solid var(--line-soft);padding-top:1.5rem;display:grid;gap:.5rem}
+.menu__logo{height:2.4rem;width:auto;margin-bottom:.25rem}
 .menu__tag{font-family:var(--serif);font-style:italic;color:var(--gold);margin:0}
 .menu__soc{display:flex;gap:1.5rem;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase}
 
@@ -501,8 +499,12 @@ ul,ol,dl,dd{margin:0;padding:0;list-style:none}
 .ledger dd{font-size:1.02rem;line-height:1.55}
 .ledger a{border-bottom:1px solid var(--line);transition:color .35s,border-color .35s}
 .ledger a:hover{color:var(--ember);border-color:var(--ember)}
+.hours{display:grid;gap:.35rem}
+.hours li{display:flex;justify-content:space-between;gap:1.5rem;max-width:22rem}
+.hours li span:last-child{color:var(--ink-3);white-space:nowrap}
 .visit__cta{display:flex;flex-wrap:wrap;gap:.8rem}
 .frame--map{aspect-ratio:3/4;position:sticky;top:7rem;box-shadow:0 40px 90px -60px rgba(20,16,13,.6)}
+.frame--map iframe{position:relative;z-index:1;width:100%;height:100%;border:0;display:block}
 
 /* ═══ FOOTER ═════════════════════════════════════════════ */
 .foot{background:var(--ink);color:var(--cream)}
@@ -517,6 +519,7 @@ ul,ol,dl,dd{margin:0;padding:0;list-style:none}
 }
 .foot__word em{font-style:italic;color:var(--ember-2)}
 .foot__tag{font-family:var(--serif);font-style:italic;color:var(--champ);margin:0}
+.foot__hours{font-size:.78rem;color:rgba(243,234,220,.6);margin:.35rem 0 0}
 .foot__col{display:flex;flex-direction:column;gap:.55rem}
 .foot__col h3{
   font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);
@@ -615,7 +618,7 @@ ul,ol,dl,dd{margin:0;padding:0;list-style:none}
 
 @media (max-width:380px){
   .masonry{columns:1}
-  .brand__name{font-size:.74rem;letter-spacing:.2em}
+  .brand img{height:2.1rem}
 }
 
 /* ═══ MOTION PREFERENCES ═════════════════════════════════ */

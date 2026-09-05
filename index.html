@@ -7,6 +7,12 @@
 <meta name="description" content="Discover GIMEK&rsquo;s Boutique in Yaoundé, where elegance meets comfort. Explore fashion, accessories, and style designed to help you look confident and feel comfortable.">
 <meta name="theme-color" content="#14100D">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+<!-- ══════════════════════════════════════════════════════════════
+     BEFORE GOING LIVE — replace every https://gimeksboutique.cm
+     below with the real domain. The same string appears in
+     robots.txt and sitemap.xml. Nothing else needs to change.
+     ══════════════════════════════════════════════════════════════ -->
 <link rel="canonical" href="https://gimeksboutique.cm/">
 
 <meta property="og:type" content="website">
@@ -14,12 +20,19 @@
 <meta property="og:title" content="GIMEK’s Boutique | Where Elegance Meets Comfort">
 <meta property="og:description" content="A fashion destination in Yaoundé. Trendy fashion, timeless elegance, everyday comfort — Rue de Kondengui.">
 <meta property="og:locale" content="en_GB">
-<meta property="og:image" content="assets/og-image.jpg">
+<meta property="og:url" content="https://gimeksboutique.cm/">
+<meta property="og:image" content="https://gimeksboutique.cm/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GIMEK’s Boutique — where elegance meets comfort">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Jost:ital,wght@0,300..600;1,300..500&display=swap" rel="stylesheet">
+<!-- Only the weights the stylesheet actually uses: Fraunces 300–400 (roman +
+     italic, SOFT and WONK axes kept — several headings tune them), Jost 300–500. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..400,0..100,0..1;1,9..144,300..400,0..100,0..1&family=Jost:wght@300..500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..400,0..100,0..1;1,9..144,300..400,0..100,0..1&family=Jost:wght@300..500&display=swap">
 <link rel="stylesheet" href="styles.css">
 
 <script type="application/ld+json">
@@ -37,6 +50,12 @@
   },
   "telephone": "+237655695361",
   "currenciesAccepted": "XAF",
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+    "opens": "08:00",
+    "closes": "22:00"
+  }],
   "sameAs": [
     "https://www.instagram.com/gimeks.boutique",
     "https://www.tiktok.com/@gimeks.boutique"
@@ -51,9 +70,8 @@
 <!-- ══ NAV ══ -->
 <header class="nav" id="nav">
   <div class="nav__in">
-    <a class="brand" href="#home" aria-label="GIMEK’s Boutique — home">
-      <span class="brand__mark" aria-hidden="true">G</span>
-      <span class="brand__name">GIMEK&rsquo;S<em>Boutique</em></span>
+    <a class="brand" href="#home">
+      <img src="assets/logo.png" alt="GIMEK&rsquo;s Boutique — home" width="501" height="247">
     </a>
 
     <nav class="nav__links" aria-label="Primary">
@@ -82,6 +100,7 @@
     <a href="#visit"><i>05</i>Visit Us</a>
   </nav>
   <div class="menu__foot">
+    <img class="menu__logo" src="assets/logo.png" alt="" width="501" height="247">
     <p class="menu__tag">Where Elegance Meets Comfort</p>
     <a href="tel:+237655695361">+237 655 69 53 61</a>
     <div class="menu__soc">
@@ -111,7 +130,7 @@
         <a class="btn btn--line" href="#visit">Visit Us</a>
       </div>
       <div class="hero__meta a" style="--d:.65s">
-        <span class="status"><i></i>Open &nbsp;·&nbsp; Closes 10&nbsp;PM</span>
+        <span class="status" data-status><i></i>Open &nbsp;·&nbsp; Closes 10&nbsp;PM</span>
         <a class="hero__tel" href="tel:+237655695361">+237 655 69 53 61</a>
       </div>
     </div>
@@ -314,7 +333,13 @@
       <div class="reveal"><dt>Address</dt><dd>Rue de Kondengui<br>Yaoundé, Cameroon</dd></div>
       <div class="reveal"><dt>Plus Code</dt><dd>VG3R+R9 Yaoundé</dd></div>
       <div class="reveal"><dt>Phone</dt><dd><a href="tel:+237655695361">+237 655 69 53 61</a></dd></div>
-      <div class="reveal"><dt>Today</dt><dd><span class="status"><i></i>Open · Closes 10 PM</span></dd></div>
+      <div class="reveal"><dt>Hours</dt><dd>
+        <ul class="hours">
+          <li><span>Monday &ndash; Saturday</span><span>8 AM &ndash; 10 PM</span></li>
+          <li><span>Sunday</span><span>&mdash;</span></li>
+        </ul>
+      </dd></div>
+      <div class="reveal"><dt>Today</dt><dd><span class="status" data-status><i></i>Open · Closes 10 PM</span></dd></div>
     </dl>
 
     <div class="visit__cta reveal">
@@ -328,7 +353,11 @@
    </div>
 
     <figure class="frame frame--map reveal">
-      <img data-slot src="assets/storefront.jpg" alt="GIMEK’s Boutique storefront on Rue de Kondengui, Yaoundé">
+      <iframe
+        src="https://www.google.com/maps?q=VG3R%2BR9%20Yaound%C3%A9&amp;output=embed"
+        title="Map showing GIMEK’s Boutique, Rue de Kondengui, Yaoundé"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
       <figcaption>VG3R+R9 &nbsp;—&nbsp; Rue de Kondengui, Yaoundé</figcaption>
     </figure>
   </div>
@@ -356,7 +385,8 @@
       <h3>Visit</h3>
       <a href="tel:+237655695361">+237 655 69 53 61</a>
       <p>Rue de Kondengui,<br>Yaoundé, Cameroon</p>
-      <p class="foot__status"><span class="status status--lt"><i></i>Open · Closes 10 PM</span></p>
+      <p class="foot__status"><span class="status status--lt" data-status><i></i>Open · Closes 10 PM</span></p>
+      <p class="foot__hours">Mon &ndash; Sat &nbsp;·&nbsp; 8 AM &ndash; 10 PM</p>
     </div>
   </div>
   <div class="foot__bottom">
