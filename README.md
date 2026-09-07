@@ -9,6 +9,7 @@ styles.css      the whole design system (tokens, dark + light)
 script.js       nav, menu, theme, lightbox, reveals, opening status, image slots
 robots.txt      crawler policy + sitemap pointer
 sitemap.xml     one URL, this page
+_headers        security headers (Netlify / Cloudflare Pages)
 assets/         photos and logo files, see assets/README.md
 ```
 
@@ -21,13 +22,76 @@ broken — that is the server, not the site. Open the file directly instead.)
 
 ## Deploying
 
-Upload `index.html`, `styles.css`, `script.js`, `robots.txt`, `sitemap.xml` and
-`assets/` to any static host: Netlify, Vercel, Cloudflare Pages, GitHub Pages, or
-ordinary shared hosting. Nothing needs to be compiled.
+Upload `index.html`, `styles.css`, `script.js`, `robots.txt`, `sitemap.xml`,
+`_headers` and `assets/` to any static host: Netlify, Vercel, Cloudflare Pages,
+GitHub Pages, or ordinary shared hosting. Nothing needs to be compiled.
 
 Before going live, replace `https://gimeksboutique.cm` with the real domain. It
 appears in three files: `index.html` (canonical + `og:` tags), `robots.txt`, and
 `sitemap.xml`.
+
+## Content Security Policy
+
+The policy is written twice, on purpose:
+
+- **`_headers`** — the real HTTP header. Netlify and Cloudflare Pages read this
+  file as-is. This is the version that counts, and the only one that can carry
+  `frame-ancestors` (browsers ignore that directive in a meta tag).
+- **`<meta http-equiv>` at the top of `index.html`** — the fallback, for hosts
+  where headers cannot be set (GitHub Pages, ordinary shared hosting) and for
+  opening `index.html` straight off disk.
+
+**Edit both together.** Where both are delivered the browser enforces both, so a
+permission added to only one is still blocked by the other.
+
+What the policy allows, and why each entry has to be there:
+
+| Directive | Why |
+|---|---|
+| `script-src 'self' 'sha256-…'` | `script.js`, plus the one inline theme script |
+| `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com` | `styles.css`, the Google Fonts stylesheet, and the eight `style="--d:…"` attributes in the hero |
+| `font-src https://fonts.gstatic.com` | the Bodoni Moda and Space Grotesk files |
+| `img-src 'self' data:` | photos in `assets/`, plus the inline SVG noise texture in `styles.css` |
+| `frame-src https://www.google.com https://maps.google.com` | the map embed in the Visit section |
+| `connect-src 'none'` | the site makes no network calls at all |
+
+`'unsafe-inline'` in `style-src` is the single relaxation. Removing it means
+moving those eight animation-delay attributes into CSS classes; nothing else
+depends on it. Inline **scripts** are not relaxed — they are pinned by hash.
+
+### Recomputing the script hash
+
+`script-src` pins the pre-paint theme script inlined in `index.html` by SHA-256.
+Change that script by so much as a space and the hash no longer matches: the
+browser silently refuses to run it, and light-mode visitors get a dark flash on
+every page load. Nothing else breaks, which is exactly what makes it easy to
+miss. After editing it, recompute:
+
+```
+python -c "import re,hashlib,base64,io; b=re.search(r'<script>(.*?)</script>',io.open('index.html',encoding='utf-8',newline='').read(),re.S).group(1); print('sha256-'+base64.b64encode(hashlib.sha256(b.encode()).digest()).decode())"
+```
+
+Paste the result into **both** `index.html` and `_headers`. To confirm it took,
+load the page and check the browser console: a mismatch logs `Executing inline
+script violates the following Content Security Policy directive`.
+
+### Other hosts
+
+`_headers` is Netlify/Cloudflare Pages syntax. Same headers elsewhere:
+
+- **Vercel** — a `headers` array in `vercel.json`.
+- **Apache / shared hosting** — `Header set Content-Security-Policy "…"` in
+  `.htaccess`.
+- **nginx** — `add_header Content-Security-Policy "…" always;` in the server block.
+- **GitHub Pages** — cannot set headers at all; the meta tag is doing the work,
+  and `frame-ancestors` and HSTS simply do not apply.
+
+`_headers` also sets `X-Content-Type-Options`, `Referrer-Policy`,
+`Permissions-Policy`, `X-Frame-Options` and HSTS. HSTS is **active**, and it is
+the one header you cannot casually take back — once a browser has seen it, it
+refuses plain HTTP to the domain for two years. Every host listed above serves
+HTTPS by default, so it is safe there; delete that line before deploying to a
+domain that still has to answer on plain HTTP.
 
 ## Adding photos
 

@@ -1,0 +1,30 @@
+# Security headers for GIMEK's Boutique.
+#
+# This file is read by Netlify and Cloudflare Pages as-is. Vercel,
+# Apache and nginx want the same headers expressed their own way —
+# README.md has the translations.
+#
+# The Content-Security-Policy here must stay in step with the <meta>
+# copy in index.html. The meta tag is the fallback for hosts that
+# cannot set headers; this file is what applies when the host can.
+# Two differences, both deliberate:
+#   - frame-ancestors is here only. Browsers ignore it in a meta tag.
+#   - the header wins wherever both are delivered, because the two
+#     policies are enforced together and this one is no looser.
+#
+# The sha256 in script-src covers the pre-paint theme script inlined
+# in index.html. Editing that script invalidates the hash and stops
+# it running. README.md has the command that recomputes it.
+
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; frame-ancestors 'self'; script-src 'self' 'sha256-hlyHGsFTw4Q2qpZdlSwoZg37M+yF2lwOLTkNZkvliKU='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.google.com https://maps.google.com; connect-src 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=()
+  X-Frame-Options: SAMEORIGIN
+  # HSTS is a promise you cannot easily take back: once a browser has
+  # seen this, it refuses plain HTTP to the domain for two years.
+  # Every host named in README.md serves HTTPS by default, so it is
+  # safe there. Delete the next line if the domain still has to answer
+  # on plain HTTP for anything. It is deliberately not `preload`.
+  Strict-Transport-Security: max-age=63072000; includeSubDomains

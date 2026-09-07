@@ -3,6 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ══════════════════════════════════════════════════════════════
+     Content Security Policy. This has to sit above everything it
+     governs, because a <meta> policy only applies to what the
+     parser reaches after it — in particular the theme script below.
+
+     A copy of this policy is also served as a real HTTP header via
+     the _headers file, which is the version that actually matters
+     on Netlify and Cloudflare Pages. The meta tag is the fallback
+     for hosts where headers cannot be set (GitHub Pages, ordinary
+     shared hosting) and for opening index.html straight off disk.
+     Keep the two in step. frame-ancestors is header-only; browsers
+     ignore it in a meta tag, so it lives in _headers alone.
+
+     script-src carries a SHA-256 of the theme script below rather
+     than 'unsafe-inline'. EDITING THAT SCRIPT — even by one space
+     — INVALIDATES THE HASH and the script silently stops running,
+     which shows up as a dark flash for light-mode visitors. README
+     has the one-line command that recomputes it.
+
+     style-src is the one relaxation: 'unsafe-inline' is there for
+     the eight style="--d:…" animation-delay attributes in the hero.
+     ══════════════════════════════════════════════════════════════ -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  base-uri 'none';
+  object-src 'none';
+  form-action 'none';
+  script-src 'self' 'sha256-hlyHGsFTw4Q2qpZdlSwoZg37M+yF2lwOLTkNZkvliKU=';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data:;
+  frame-src https://www.google.com https://maps.google.com;
+  connect-src 'none';
+  upgrade-insecure-requests">
 <title>GIMEK&rsquo;s Boutique | Fashion &amp; Style Boutique in Yaoundé</title>
 <meta name="description" content="Discover GIMEK&rsquo;s Boutique in Yaoundé, where elegance meets comfort. Explore fashion, accessories, and style designed to help you look confident and feel comfortable.">
 <meta name="color-scheme" content="dark light">
