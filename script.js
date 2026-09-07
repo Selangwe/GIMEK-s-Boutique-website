@@ -7,6 +7,26 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ── 0. Overlay helper ───────────────────────────────────
+     A full-screen overlay has to take the page out of the tab
+     order behind it, otherwise Tab walks straight off the
+     dialog and into content the visitor cannot see. `inert`
+     does that in one attribute and is ignored by browsers
+     that do not support it, which only get the old behaviour.
+     `keep` is the list that stays reachable; every other
+     top-level region is frozen until thaw(). */
+  function freeze(keep) {
+    var all = document.querySelectorAll('a.skip, header.nav, main, footer, .bar, .menu, .lb');
+    Array.prototype.forEach.call(all, function (el) {
+      if (keep.indexOf(el) === -1) { el.inert = true; }
+      else { el.inert = false; }
+    });
+  }
+  function thaw() {
+    var all = document.querySelectorAll('a.skip, header.nav, main, footer, .bar, .menu, .lb');
+    Array.prototype.forEach.call(all, function (el) { el.inert = false; });
+  }
+
   /* ── 1. Image slots ──────────────────────────────────────
      Photos live in /assets. Until a real file is dropped in,
      the CSS placeholder behind each frame carries the design.
@@ -57,7 +77,8 @@
     function paint() {
       var light = root.getAttribute('data-theme') === 'light';
       btn.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
-      if (meta) meta.setAttribute('content', light ? '#FAF9F7' : '#0B0A09');
+      // These two must stay equal to --bg in each theme in styles.css.
+      if (meta) meta.setAttribute('content', light ? '#FBF8F6' : '#141011');
     }
 
     btn.addEventListener('click', function () {
@@ -135,12 +156,16 @@
       burger.setAttribute('aria-expanded', 'true');
       burger.setAttribute('aria-label', 'Close menu');
       document.body.style.overflow = 'hidden';
+      // The nav bar stays above the overlay and stays usable; the
+      // page underneath must not.
+      freeze([document.querySelector('header.nav'), menu]);
     }
     function close() {
       menu.classList.remove('is-open');
       burger.setAttribute('aria-expanded', 'false');
       burger.setAttribute('aria-label', 'Open menu');
       document.body.style.overflow = '';
+      thaw();
       window.setTimeout(function () {
         if (!menu.classList.contains('is-open')) menu.hidden = true;
       }, reduced ? 0 : 450);
@@ -210,12 +235,14 @@
       void lb.offsetWidth;
       lb.classList.add('is-open');
       document.body.style.overflow = 'hidden';
+      freeze([lb]);
       btnClose.focus();
     }
 
     function close() {
       lb.classList.remove('is-open');
       document.body.style.overflow = '';
+      thaw();
       window.setTimeout(function () {
         if (!lb.classList.contains('is-open')) {
           lb.hidden = true;
@@ -246,12 +273,23 @@
       else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
       else if (e.key === 'Tab') {
-        // Keep focus inside the dialog while it is open.
-        var focusable = [btnClose, btnPrev, btnNext].filter(function (b) { return !b.hidden; });
+        /* Keep focus inside the dialog. The list has to be in DOM
+           order — prev, next, close — because that is the order Tab
+           actually follows. Listing close first (it is the button we
+           focus on open) put the wrap-around on the wrong end, and
+           Tab from the close button walked out of the dialog and on
+           into the page behind it. */
+        var focusable = [btnPrev, btnNext, btnClose].filter(function (b) { return !b.hidden; });
+        if (!focusable.length) { e.preventDefault(); return; }
         var first = focusable[0];
         var last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        if (focusable.indexOf(document.activeElement) === -1) {
+          e.preventDefault(); (e.shiftKey ? last : first).focus();
+        } else if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
       }
     });
   }
@@ -331,6 +369,7 @@
       var state = statusLabel(wat);
 
       Array.prototype.forEach.call(els, function (el) {
+        el.classList.remove('is-idle');       // the markup's neutral state
         el.classList.toggle('is-closed', !state.open);
         var dot = el.querySelector('i');
         el.textContent = state.text;            // clears the old label

@@ -9,11 +9,13 @@
    hairlines. That is the whole idea. One accent, no second
    colour, ever.
 
-   Display voice is Bodoni Moda: a high-contrast fashion serif
-   whose hairlines only survive at large optical sizes, which is
-   exactly where we set it. Emphasis is its ITALIC in crimson —
-   same family, never a third typeface. UI and body are Space
-   Grotesk, wide-tracked in caps.
+   Display voice is Fraunces: a soft variable serif. It replaced
+   Bodoni Moda, whose Didone hairlines thinned to nothing on a
+   phone — the headings were legibly worse the smaller the screen
+   got, which is exactly backwards. Fraunces carries far more
+   weight in the thin strokes and reads at any size. Emphasis is
+   its true ITALIC in crimson — same family, never a third
+   typeface. UI and body are Space Grotesk, wide-tracked in caps.
 
    Dark is the default for every visitor regardless of OS
    preference; [data-theme="light"] is an opt-in swap driven by
@@ -24,51 +26,61 @@
 :root{
   color-scheme:dark;
 
-  /* ground — warm near-black, never pure #000, so photography
-     and the logo's true black still read as black on top of it */
-  --bg:#0B0A09;
-  --bg-2:#121110;
-  --bg-3:#1A1817;
+  /* ground — warm PLUM-black, never pure #000, so photography and
+     the logo's true black still read as black on top of it. The
+     plum is what stops a dark fashion page reading as a nightclub;
+     it is the same warmth as the blush light theme, held at 6%
+     lightness instead of 97%. */
+  --bg:#141011;
+  --bg-2:#1C1618;
+  --bg-3:#251D20;
 
   /* glass: elevated panels, always the ink colour at low alpha */
-  --glass:rgba(244,241,237,.045);
-  --glass-2:rgba(244,241,237,.08);
+  --glass:rgba(247,240,238,.045);
+  --glass-2:rgba(247,240,238,.08);
 
   /* text */
-  --ink:#F4F1ED;
-  --ink-2:#BFB8B0;
-  --mute:#8A837C;
+  --ink:#F7F0EE;
+  --ink-2:#C7B9B6;
+  --mute:#9E8F8D;
 
   /* the one accent, in three states */
-  --accent:#E8442F;        /* lit crimson — text, icons, glow */
+  /* The reds are NOT tuned to the palette — they are tuned to the
+     logo, and the logo is not being reworked. #E8442F is the exact
+     red in assets/logo-dark.png. So the page gets its restraint
+     from the ground and from how little accent is used, never from
+     desaturating the brand. */
+  --accent:#E8442F;        /* the logo-dark red — text, icons */
   --accent-deep:#941004;   /* the logo's own red — solid fills */
   --accent-2:#FF6A52;      /* hover lift */
   --on-accent:#FFF4F1;
-  --glow:rgba(232,68,47,.34);
-  --glow-soft:rgba(232,68,47,.14);
+  /* Halved. Crimson used to be ambient light spilling over the whole
+     page; now it is an accent that happens to sit on a warm ground. */
+  --glow:rgba(232,68,47,.16);
+  --glow-soft:rgba(232,68,47,.06);
 
-  --line:rgba(244,241,237,.13);
-  --line-soft:rgba(244,241,237,.06);
+  --line:rgba(247,240,238,.11);
+  --line-soft:rgba(247,240,238,.05);
 
   /* deep bands: sections that sink below the page ground */
-  --deep:#060605;
-  --deep-2:#0E0D0C;
+  --deep:#0E0B0C;
+  --deep-2:#171214;
 
   /* empty image slots — lifted far enough off the ground that an
      unfilled slot reads as a designed frame, not a hole */
-  --ph-1:#171615;
-  --ph-2:#211F1D;
-  --ph-3:#2C2926;
-  --ph-mark:rgba(244,241,237,.10);
+  --ph-1:#1E181A;
+  --ph-2:#271F22;
+  --ph-3:#332A2D;
+  --ph-mark:rgba(247,240,238,.09);
 
   --wa:#1E7A4D;
   --wa-lt:#5FD08A;
 
   --grain-blend:screen;
-  --grain-alpha:.20;
-  --shadow:0 40px 100px -60px rgba(0,0,0,.9);
+  --grain-alpha:.14;
+  --shadow:0 40px 100px -60px rgba(0,0,0,.85);
 
-  --display:"Bodoni Moda","Bodoni MT",Didot,"Didot LT STD","Playfair Display",Georgia,serif;
+  --display:"Fraunces","Playfair Display",Georgia,"Times New Roman",serif;
   --sans:"Space Grotesk","Inter","Segoe UI",system-ui,-apple-system,sans-serif;
 
   --pad:clamp(1.25rem,5vw,5.5rem);
@@ -79,68 +91,77 @@
 }
 
 /* ── light mode, opt-in only ─────────────────────────────
-   The paper version of the same identity. Crimson goes back to
-   being ink (#941004 on off-white is 11:1), the glow pulls right
-   down, glass becomes a faint tint of the ink instead. */
+   Blush and ivory: the paper version of the same identity. The
+   ground warms towards pink, the ink is a deep plum-brown rather
+   than a neutral black, and crimson goes back to being ink
+   (#941004 on this ivory is still over 10:1). The glow pulls right
+   down; glass becomes a faint tint of the plum ink instead. */
 [data-theme="light"]{
   color-scheme:light;
 
-  --bg:#FAF9F7;
-  --bg-2:#F2EFEB;
-  --bg-3:#E9E5E0;
+  --bg:#FBF8F6;
+  --bg-2:#F4EDE9;
+  --bg-3:#EBE1DC;
 
-  --glass:rgba(18,18,18,.035);
-  --glass-2:rgba(18,18,18,.06);
+  --glass:rgba(43,34,36,.03);
+  --glass-2:rgba(43,34,36,.055);
 
-  --ink:#121212;
-  --ink-2:#3A3835;
-  --mute:#6E6A66;
+  --ink:#2B2224;
+  --ink-2:#4E4143;
+  --mute:#6F6260;
 
+  /* the exact red in assets/logo.png, unchanged */
   --accent:#941004;
   --accent-deep:#941004;
   --accent-2:#B8180A;
-  --on-accent:#FAF9F7;
-  --glow:rgba(148,16,4,.20);
-  --glow-soft:rgba(148,16,4,.08);
+  --on-accent:#FBF8F6;
+  --glow:rgba(148,16,4,.12);
+  --glow-soft:rgba(148,16,4,.05);
 
-  --line:rgba(18,18,18,.14);
-  --line-soft:rgba(18,18,18,.07);
+  --line:rgba(43,34,36,.12);
+  --line-soft:rgba(43,34,36,.06);
 
-  --deep:#121212;
-  --deep-2:#1A1A19;
+  --deep:#231B1D;
+  --deep-2:#2B2224;
 
-  --ph-1:#EAE7E2;
-  --ph-2:#DDD8D2;
-  --ph-3:#C9C3BB;
-  --ph-mark:rgba(18,18,18,.07);
+  --ph-1:#EFE8E3;
+  --ph-2:#E4DAD4;
+  --ph-3:#D3C6BF;
+  --ph-mark:rgba(43,34,36,.07);
 
   --grain-blend:multiply;
-  --grain-alpha:.34;
-  --shadow:0 40px 90px -60px rgba(18,18,18,.5);
+  --grain-alpha:.22;
+  --shadow:0 40px 90px -60px rgba(43,34,36,.45);
 }
 
 /* Deep bands in light mode invert to near-black, the way the
    paper design did, so the page keeps its rhythm either way. */
 [data-theme="light"] .band--deep{
-  --ink:#F1EFEC;
-  --ink-2:#CFCAC4;
-  --mute:rgba(241,239,236,.62);
-  --line:rgba(241,239,236,.15);
-  --line-soft:rgba(241,239,236,.08);
-  --glass:rgba(241,239,236,.05);
-  --glass-2:rgba(241,239,236,.09);
+  --ink:#F5EFEC;
+  --ink-2:#D5CBC8;
+  --mute:rgba(245,239,236,.66);
+  --line:rgba(245,239,236,.13);
+  --line-soft:rgba(245,239,236,.07);
+  --glass:rgba(245,239,236,.05);
+  --glass-2:rgba(245,239,236,.09);
   --accent:#E8442F;
   --accent-deep:#E8442F;
-  --on-accent:#121212;
-  --glow:rgba(232,68,47,.3);
-  --glow-soft:rgba(232,68,47,.13);
-  --ph-1:#1C1B1A;
-  --ph-2:#232221;
-  --ph-3:#2C2A28;
-  --ph-mark:rgba(241,239,236,.07);
+  --on-accent:#231B1D;
+  --glow:rgba(232,68,47,.15);
+  --glow-soft:rgba(232,68,47,.06);
+  --ph-1:#241D1F;
+  --ph-2:#2C2427;
+  --ph-3:#372E31;
+  --ph-mark:rgba(245,239,236,.07);
 }
 
 *,*::before,*::after{box-sizing:border-box}
+
+/* The hidden attribute has to beat every display: rule in this sheet.
+   Without this, any element the script hides with .hidden = true but
+   that also carries a display: declaration here (.lb__btn is display:grid)
+   stays on screen and stays clickable. */
+[hidden]{display:none !important}
 
 html{
   -webkit-text-size-adjust:100%;
@@ -206,8 +227,8 @@ button{font:inherit;color:inherit}
   background:radial-gradient(circle,var(--glow) 0%,transparent 70%);
   will-change:transform;
 }
-.aura::before{width:46rem;height:46rem;top:-18rem;right:-14rem;opacity:.6;animation:drift 26s var(--ease) infinite alternate}
-.aura::after{width:34rem;height:34rem;bottom:-16rem;left:-12rem;opacity:.36;animation:drift 34s var(--ease) infinite alternate-reverse}
+.aura::before{width:46rem;height:46rem;top:-18rem;right:-14rem;opacity:.4;animation:drift 26s var(--ease) infinite alternate}
+.aura::after{width:34rem;height:34rem;bottom:-16rem;left:-12rem;opacity:.24;animation:drift 34s var(--ease) infinite alternate-reverse}
 @keyframes drift{
   from{transform:translate3d(0,0,0) scale(1)}
   to{transform:translate3d(-4rem,3rem,0) scale(1.18)}
@@ -241,17 +262,25 @@ button{font:inherit;color:inherit}
 
 .h2{
   font-family:var(--display);
+  /* No hard-pinned opsz. Fraunces' optical axis runs 9..144 and
+     font-optical-sizing maps it from the font size, which is what
+     keeps the small headings from inheriting a display cut. */
   font-optical-sizing:auto;
-  font-variation-settings:"opsz" 96;
   font-size:clamp(2.5rem,6.4vw,5.2rem);
-  line-height:1;font-weight:400;letter-spacing:-.025em;
+  line-height:1.02;font-weight:300;letter-spacing:-.02em;
+  /* Fraunces is wider than the Bodoni this replaced, so headings
+     started stranding one word on the last line. Balance the lines
+     instead of hand-tuning each font size. Ignored by browsers that
+     do not support it, which just get the old ragged break. */
+  text-wrap:balance;
 }
-/* Emphasis is the italic of the SAME family, in crimson. Bodoni's
+/* Emphasis is the italic of the SAME family, in crimson. Fraunces'
    italic is the most feminine mark on this page and it costs no
-   extra typeface. */
+   extra typeface. It carries a little more weight than the roman so
+   it still reads as emphasis at 300. */
 .h2 em{
   font-style:italic;font-weight:500;color:var(--accent);
-  text-shadow:0 0 46px var(--glow-soft);
+  text-shadow:0 0 40px var(--glow-soft);
 }
 
 .lede{font-size:1.03rem;line-height:1.78;max-width:46ch;color:var(--ink-2);margin-top:1.5rem;font-weight:300}
@@ -314,7 +343,7 @@ button{font:inherit;color:inherit}
   width:.42rem;height:.42rem;border-radius:50%;background:var(--wa-lt);flex:none;
   box-shadow:0 0 0 0 rgba(95,208,138,.6);animation:pulse 2.4s infinite;
 }
-.status.is-closed i{background:var(--mute);box-shadow:none;animation:none}
+.status.is-closed i,.status.is-idle i{background:var(--mute);box-shadow:none;animation:none}
 @keyframes pulse{70%{box-shadow:0 0 0 7px rgba(95,208,138,0)}100%{box-shadow:0 0 0 0 rgba(95,208,138,0)}}
 
 /* ═══ IMAGE SLOTS ════════════════════════════════════════
@@ -458,7 +487,8 @@ button{font:inherit;color:inherit}
 .menu__links{display:flex;flex-direction:column;gap:.2rem;margin-bottom:auto;margin-top:1rem}
 .menu__links a{
   font-family:var(--display);font-optical-sizing:auto;
-  font-size:clamp(2.2rem,10vw,3.2rem);line-height:1.16;letter-spacing:-.02em;
+  font-size:clamp(2.2rem,10vw,3.2rem);line-height:1.16;
+  font-weight:300;letter-spacing:-.015em;
   opacity:0;transform:translateY(18px);
   transition:color .35s var(--ease);
 }
@@ -489,16 +519,15 @@ button{font:inherit;color:inherit}
 
 .hero__h1{
   font-family:var(--display);font-optical-sizing:auto;
-  font-variation-settings:"opsz" 96;
-  font-size:clamp(3.1rem,8.6vw,7.4rem);
-  line-height:.94;font-weight:400;letter-spacing:-.035em;
+  font-size:clamp(2.95rem,7.9vw,6.9rem);
+  line-height:.98;font-weight:300;letter-spacing:-.028em;
   margin:0 0 1.8rem;
 }
-.hero__h1 span{display:block}
-/* The second line is the brand promise. Italic, crimson, lit. */
+.hero__h1 span{display:block;text-wrap:balance}
+/* The second line is the brand promise. Italic, crimson. */
 .hero__em{
   font-style:italic;font-weight:500;color:var(--accent);
-  text-shadow:0 0 60px var(--glow-soft);
+  text-shadow:0 0 52px var(--glow-soft);
 }
 .hero__sub{font-size:clamp(1rem,.5vw + .9rem,1.14rem);max-width:40ch;color:var(--ink-2);line-height:1.76;font-weight:300}
 .hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin:2.3rem 0 0}
@@ -541,7 +570,7 @@ button{font:inherit;color:inherit}
   font-size:clamp(1.05rem,2.3vw,1.6rem);
   color:var(--ink-2);white-space:nowrap;padding-right:1rem;
 }
-.ticker b{color:var(--accent);font-weight:400;font-style:normal;padding:0 .7rem;text-shadow:0 0 18px var(--glow)}
+.ticker b{color:var(--accent);font-weight:400;font-style:normal;padding:0 .7rem}
 @keyframes slide{to{transform:translateX(-50%)}}
 [data-theme="light"] .ticker{background:var(--deep)}
 [data-theme="light"] .ticker__track span{color:rgba(241,239,236,.78)}
@@ -617,7 +646,7 @@ button{font:inherit;color:inherit}
 .cat:hover .cat__no{color:var(--accent)}
 .cat__bar h3{
   font-family:var(--display);font-size:clamp(1.15rem,1.6vw,1.5rem);
-  font-weight:400;letter-spacing:-.01em;
+  font-weight:400;letter-spacing:-.005em;
   transition:color .45s var(--ease);
 }
 .cat:hover .cat__bar h3{color:var(--accent)}
@@ -641,7 +670,6 @@ button{font:inherit;color:inherit}
   font-family:var(--display);font-style:italic;font-size:1.35rem;
   color:var(--accent);margin:2rem 0 0;padding-top:1.6rem;
   border-top:1px solid var(--line);
-  text-shadow:0 0 34px var(--glow-soft);
 }
 
 /* ═══ WHY (deep band) ════════════════════════════════════ */
@@ -663,14 +691,12 @@ button{font:inherit;color:inherit}
   position:absolute;left:0;top:calc(clamp(1.6rem,3vw,2.3rem) + .35rem);
   font-size:.66rem;letter-spacing:.16em;color:var(--accent);
   font-variant-numeric:tabular-nums;
-  transition:text-shadow .5s var(--ease);
 }
 .why__list{counter-reset:why}
 .why__list li:hover{padding-left:4.2rem;background:var(--glass)}
-.why__list li:hover::before{text-shadow:0 0 16px var(--glow)}
 .why__list h3{
   font-family:var(--display);font-size:clamp(1.3rem,2.2vw,1.85rem);
-  font-weight:400;margin-bottom:.55rem;letter-spacing:-.01em;
+  font-weight:400;margin-bottom:.55rem;letter-spacing:-.005em;
 }
 .why__list p{margin:0;color:var(--mute);font-size:.95rem;max-width:46ch;line-height:1.7}
 
@@ -805,10 +831,10 @@ button{font:inherit;color:inherit}
 }
 .foot__word{
   font-family:var(--display);font-optical-sizing:auto;
-  font-size:clamp(2.2rem,4.4vw,3.4rem);line-height:.98;
-  font-weight:400;letter-spacing:-.03em;margin:0 0 .9rem;
+  font-size:clamp(2.2rem,4.4vw,3.4rem);line-height:1.02;
+  font-weight:300;letter-spacing:-.022em;margin:0 0 .9rem;
 }
-.foot__word em{font-style:italic;font-weight:500;color:var(--accent);text-shadow:0 0 40px var(--glow-soft)}
+.foot__word em{font-style:italic;font-weight:500;color:var(--accent)}
 .foot__tag{
   font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);margin:0;
 }

@@ -41,7 +41,7 @@
 <title>GIMEK&rsquo;s Boutique | Fashion &amp; Style Boutique in Yaoundé</title>
 <meta name="description" content="Discover GIMEK&rsquo;s Boutique in Yaoundé, where elegance meets comfort. Explore fashion, accessories, and style designed to help you look confident and feel comfortable.">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0B0A09">
+<meta name="theme-color" content="#141011">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
 <!-- The site is dark by default for everyone, regardless of OS
@@ -80,14 +80,27 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Bodoni Moda is the display voice: a high-contrast fashion serif
-     whose hairlines only survive at large optical sizes, which is
-     where we set it. Its italic carries every emphasis, so the page
-     never needs a third typeface. Space Grotesk handles UI and body.
-     Only the axes actually used are requested. -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=Space+Grotesk:wght@300..500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=Space+Grotesk:wght@300..500&display=swap">
+<!-- Fraunces is the display voice: a soft variable serif whose thin
+     strokes stay thick enough to survive a phone screen, which is
+     the whole reason it replaced Bodoni Moda. Its true italic
+     carries every emphasis, so the page never needs a third
+     typeface. Space Grotesk handles UI and body. Only the axes
+     actually used are requested; opsz is a range because the
+     stylesheet lets font-optical-sizing pick from the font size.
+     These two URLs must stay identical to each other. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..500&display=swap">
 <link rel="stylesheet" href="styles.css">
+
+<!-- Scroll reveals start at opacity:0 and are switched on by
+     script.js. With JavaScript off nothing below the hero ever
+     appeared. This restores the whole page as a plain static
+     document; it needs style-src 'unsafe-inline', which the
+     policy above already allows for the hero delay attributes. -->
+<noscript><style>
+  .reveal{opacity:1 !important;transform:none !important}
+  .status.is-idle i{background:var(--mute);box-shadow:none;animation:none}
+</style></noscript>
 
 <script type="application/ld+json">
 {
@@ -103,6 +116,14 @@
     "addressCountry": "CM"
   },
   "telephone": "+237655695361",
+  "url": "https://gimeksboutique.cm/",
+  "image": "https://gimeksboutique.cm/assets/og-image.jpg",
+  "hasMap": "https://www.google.com/maps?cid=1659824850323867051",
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 3.8545468,
+    "longitude": 11.5409584
+  },
   "currenciesAccepted": "XAF",
   "openingHoursSpecification": [{
     "@type": "OpeningHoursSpecification",
@@ -411,12 +432,12 @@
           <li><span>Monday to Saturday</span><span>8 AM to 10 PM</span></li>
           <li><span>Sunday</span><span>Closed</span></li>
         </ul>
-        <p class="hours__now"><span class="status" data-status><i></i>Open now. Closes 10 PM</span></p>
+        <p class="hours__now"><span class="status is-idle" data-status><i></i>Monday to Saturday, 8 AM to 10 PM</span></p>
       </dd></div>
     </dl>
 
     <div class="visit__cta reveal">
-      <a class="btn btn--accent" href="https://www.google.com/maps/search/?api=1&amp;query=VG3R%2BR9%20Yaound%C3%A9" target="_blank" rel="noopener">
+      <a class="btn btn--accent" href="https://www.google.com/maps/dir/?api=1&amp;destination=3.8545468%2C11.5409584" target="_blank" rel="noopener">
         <svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>
         Get Directions
       </a>
@@ -433,7 +454,7 @@
 
     <figure class="frame frame--map reveal">
       <iframe
-        src="https://www.google.com/maps?q=VG3R%2BR9%20Yaound%C3%A9&amp;output=embed"
+        src="https://www.google.com/maps?cid=1659824850323867051&amp;output=embed"
         title="Map showing GIMEK’s Boutique, Rue de Kondengui, Yaoundé"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -465,7 +486,7 @@
       <a href="tel:+237655695361">+237 655 69 53 61</a>
       <p>Rue de Kondengui,<br>Yaoundé, Cameroon</p>
       <p class="foot__hours">Monday to Saturday, 8 AM to 10 PM</p>
-      <p class="foot__status"><span class="status" data-status><i></i>Open now. Closes 10 PM</span></p>
+      <p class="foot__status"><span class="status is-idle" data-status><i></i>Monday to Saturday, 8 AM to 10 PM</span></p>
     </div>
   </div>
   <div class="foot__bottom">
@@ -484,11 +505,11 @@
 </div>
 
 <!-- ══ MOBILE ACTION BAR ══ -->
-<div class="bar" aria-label="Quick contact">
+<nav class="bar" aria-label="Quick contact">
   <a href="tel:+237655695361"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>Call</a>
   <a class="bar--wa" href="https://wa.me/237655695361?text=Hello%20GIMEK%E2%80%99s%20Boutique%2C%20I%20found%20you%20online." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
-  <a href="https://www.google.com/maps/search/?api=1&amp;query=VG3R%2BR9%20Yaound%C3%A9" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>Directions</a>
-</div>
+  <a href="https://www.google.com/maps/dir/?api=1&amp;destination=3.8545468%2C11.5409584" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>Directions</a>
+</nav>
 
 <script src="script.js"></script>
 </body>

@@ -1,6 +1,12 @@
 # Client brief — local only, not published
 New Text Document.txt
 
+# Trialled for the headings and rejected: caps-only with no true
+# lowercase, missing ' and é and &, no italic, and its own fsType bits
+# are set to "Preview & Print only", which does not permit web
+# embedding. Kept out of the repo so it cannot be shipped by accident.
+Fashion.ttf
+
 # Windows / OneDrive noise
 desktop.ini
 Thumbs.db
