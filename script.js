@@ -382,7 +382,34 @@
     window.setInterval(paint, 60000);
   }
 
-  /* ── 10. Footer year ───────────────────────────────────── */
+  /* ── 10. Map facade ──────────────────────────────────────
+     The Google embed costs about 1.5 MB across 16 requests and was
+     the slowest thing on the page by a wide margin. The markup ships
+     a button instead; the real iframe is built here on the first
+     tap. Get Directions and Call already do the job without it, so
+     nobody who never presses this loses anything. */
+  function initMap() {
+    var btn = document.getElementById('map-load');
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+      var src = btn.getAttribute('data-map');
+      if (!src) return;
+      var frame = document.createElement('iframe');
+      frame.src = src;
+      frame.title = btn.getAttribute('data-title') || 'Map';
+      frame.loading = 'eager';                 // it was just asked for
+      frame.referrerPolicy = 'no-referrer-when-downgrade';
+      frame.setAttribute('allowfullscreen', '');
+      btn.replaceWith(frame);
+      // The frame is what the visitor just asked to see, so send focus
+      // there rather than leaving it on a button that no longer exists.
+      frame.setAttribute('tabindex', '-1');
+      frame.focus({ preventScroll: true });
+    }, { once: true });
+  }
+
+  /* ── 11. Footer year ───────────────────────────────────── */
   function initYear() {
     var yr = document.getElementById('yr');
     if (yr) yr.textContent = String(new Date().getFullYear());
@@ -397,5 +424,6 @@
   initReveal();
   initSpy();
   initStatus();
+  initMap();
   initYear();
 })();

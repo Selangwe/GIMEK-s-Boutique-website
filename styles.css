@@ -23,6 +23,47 @@
    block of overrides and nothing else.
    ═══════════════════════════════════════════════════════════ */
 
+/* ═══ FONTS, SELF-HOSTED ═════════════════════════════════
+   These used to come from Google Fonts, which cost two extra
+   origins and a render-blocking round trip on the critical path:
+   the browser had to fetch CSS from fonts.googleapis.com before it
+   even learned where the font files lived on fonts.gstatic.com. On
+   a phone that was most of a second of blank screen.
+
+   Serving them from assets/fonts removes both origins, lets the
+   fonts start downloading the moment this file is parsed, and drops
+   font-src to 'self' in the Content Security Policy.
+
+   Latin subset only, which is every character this site uses,
+   including é for Yaoundé and the curly apostrophe in GIMEK's. Both
+   families are SIL Open Font Licence, which permits this.
+
+   To refresh: request the same css2 URL from Google with a modern
+   browser User-Agent, take the @font-face block whose unicode-range
+   begins U+0000-00FF, and download that woff2. README has the
+   command. -------------------------------------------------- */
+@font-face{
+  font-family:'Fraunces';
+  font-style:normal;
+  font-weight:300 500;
+  font-display:swap;
+  src:url(assets/fonts/fraunces-normal-latin.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Fraunces';
+  font-style:italic;
+  font-weight:300 500;
+  font-display:swap;
+  src:url(assets/fonts/fraunces-italic-latin.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Space Grotesk';
+  font-style:normal;
+  font-weight:300 500;
+  font-display:swap;
+  src:url(assets/fonts/space-grotesk-normal-latin.woff2) format('woff2');
+}
+
 :root{
   color-scheme:dark;
 
@@ -225,7 +266,9 @@ button{font:inherit;color:inherit}
   content:"";position:absolute;border-radius:50%;
   filter:blur(90px);
   background:radial-gradient(circle,var(--glow) 0%,transparent 70%);
-  will-change:transform;
+  /* No will-change. It promoted both of these to permanent composited
+     layers for the life of the page; Chrome promotes an animating
+     transform by itself, only while it is animating. */
 }
 .aura::before{width:46rem;height:46rem;top:-18rem;right:-14rem;opacity:.4;animation:drift 26s var(--ease) infinite alternate}
 .aura::after{width:34rem;height:34rem;bottom:-16rem;left:-12rem;opacity:.24;animation:drift 34s var(--ease) infinite alternate-reverse}
@@ -823,6 +866,33 @@ button{font:inherit;color:inherit}
    do not invite. */
 .frame--map iframe{position:relative;z-index:1;width:100%;height:100%;border:0;display:block}
 
+/* ── map facade ───────────────────────────────────────────
+   What sits in the map frame until the visitor asks for the
+   embed. Styled as a panel rather than a button so it reads as
+   part of the page, but it is a real <button> so it is reachable
+   by keyboard and announced correctly. */
+.mapfx{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;
+  width:100%;height:100%;border:0;padding:1.5rem;
+  background:transparent;color:var(--ink);cursor:pointer;font:inherit;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .5s var(--ease);
+}
+.mapfx:hover,.mapfx:focus-visible{background:var(--glass)}
+.mapfx__pin{font-size:2rem;color:var(--accent);transition:transform .5s var(--ease-out)}
+.mapfx:hover .mapfx__pin{transform:translateY(-4px)}
+.mapfx__where{
+  font-family:var(--display);font-optical-sizing:auto;font-style:italic;
+  font-size:clamp(1.1rem,2.2vw,1.45rem);font-weight:400;line-height:1.3;text-align:center;
+}
+.mapfx__go{
+  font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);
+  border-bottom:1px solid var(--line);padding-bottom:.25rem;
+  transition:color .4s var(--ease),border-color .4s var(--ease);
+}
+.mapfx:hover .mapfx__go,.mapfx:focus-visible .mapfx__go{color:var(--accent);border-bottom-color:var(--accent)}
+
 /* ═══ FOOTER (deep band) ═════════════════════════════════ */
 .foot__top{
   position:relative;z-index:1;max-width:1440px;margin:0 auto;
@@ -921,7 +991,11 @@ button{font:inherit;color:inherit}
   .why__head{position:static}
   .social__in{grid-template-columns:1fr;gap:2.5rem}
   .visit__in{grid-template-columns:1fr;gap:3rem}
-  .frame--map{position:static;aspect-ratio:4/3}
+  /* relative, NOT static. The facade button inside is absolutely
+     positioned to inset:0; with position:static this frame stops being
+     its containing block, the button escapes to .visit__in and covers
+     the entire Visit section, hiding every word of it. */
+  .frame--map{position:relative;aspect-ratio:4/3;top:auto}
 
   .bar{display:flex}
   body{padding-bottom:4.6rem}
@@ -942,6 +1016,45 @@ button{font:inherit;color:inherit}
 @media (max-width:380px){
   .brand img{height:1.95rem}
   .btn{padding:.95rem 1.4rem;font-size:.66rem;letter-spacing:.16em}
+}
+
+/* ═══ MOBILE PAINT BUDGET ════════════════════════════════
+   Everything switched off here is a per-frame paint cost a phone
+   should not pay. Measured on a mid-range phone profile, these were
+   the difference between a page that scrolls and one that stutters.
+
+   The aurora is also what broke the Visit section: two very large
+   blurred, animating, promoted layers on a 9,800px page desynced the
+   compositor badly enough that Chrome stopped painting that section
+   after a long scroll, while layout still reported it visible.
+
+   Desktop keeps all of it. This is a phone budget, not a retreat. */
+@media (max-width:980px),(pointer:coarse){
+  /* 46rem and 34rem radial gradients under a 90px blur, animating for
+     ever. The single most expensive thing on the page after the map. */
+  .aura{display:none}
+
+  /* A fixed layer twice the viewport in each direction, blend-composited
+     over the whole page every frame. */
+  .grain{display:none}
+
+  /* Blurring the entire backdrop behind a bar on every scroll frame.
+     These solid colours are the same fallbacks already written for
+     browsers with no backdrop-filter support, so nothing looks
+     unfinished — it just stops costing anything. */
+  .nav.is-stuck{
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:var(--bg);
+  }
+  .menu{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+  .bar{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--deep)}
+  .lb{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--deep)}
+  .btn--line{backdrop-filter:none;-webkit-backdrop-filter:none}
+
+  /* Softening the frame glows too: a large spread shadow on every
+     photo frame is a lot of overdraw on a small screen. */
+  .frame--lit{box-shadow:inset 0 0 0 1px var(--line)}
+  .frame--small{box-shadow:inset 0 0 0 1px var(--line),0 20px 40px -30px rgba(0,0,0,.9)}
 }
 
 /* ═══ MOTION PREFERENCES ═════════════════════════════════ */

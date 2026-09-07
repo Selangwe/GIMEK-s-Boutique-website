@@ -49,8 +49,8 @@ What the policy allows, and why each entry has to be there:
 | Directive | Why |
 |---|---|
 | `script-src 'self' 'sha256-…'` | `script.js`, plus the one inline theme script |
-| `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com` | `styles.css`, the Google Fonts stylesheet, and the eight `style="--d:…"` attributes in the hero |
-| `font-src https://fonts.gstatic.com` | the Fraunces and Space Grotesk files |
+| `style-src 'self' 'unsafe-inline'` | `styles.css` and the eight `style="--d:…"` attributes in the hero |
+| `font-src 'self'` | the three self-hosted woff2 files in `assets/fonts` |
 | `img-src 'self' data:` | photos in `assets/`, plus the inline SVG noise texture in `styles.css` |
 | `frame-src https://www.google.com https://maps.google.com` | the map embed in the Visit section |
 | `connect-src 'none'` | the site makes no network calls at all |
@@ -102,8 +102,8 @@ broken image.
 
 ## Design notes
 
-- **Type**: **Fraunces** (display) + **Space Grotesk** (UI and body), from Google
-  Fonts with local serif / sans fallbacks. Fraunces replaced Bodoni Moda, which
+- **Type**: **Fraunces** (display) + **Space Grotesk** (UI and body),
+  **self-hosted** from `assets/fonts` with local serif / sans fallbacks. Fraunces replaced Bodoni Moda, which
   was the wrong tool for this job: a Didone's thin strokes are hairlines by
   design, so the headings got *less* legible the smaller the screen, which is
   exactly backwards for a site most people reach from Instagram on a phone.
@@ -177,6 +177,60 @@ JSON-LD, once in the Visit ledger, and once in the footer. The live "Open now /
 Closed" pill is computed by `initStatus()` in `script.js` against the boutique's
 own clock (West Africa Time, UTC+1), so a visitor abroad still sees whether the
 door is actually open. The collection section is a **showcase**, not a shop.
+
+## Performance
+
+Measured in headless Chrome on a mid-range phone profile: 390x844, 4x CPU
+slowdown, 1.6 Mbps down, 150 ms latency.
+
+| | before | after |
+|---|---|---|
+| Largest Contentful Paint | 10,628 ms | ~2,300 ms |
+| First Contentful Paint | 3,968 ms | ~1,900 ms |
+| Load event | 11,644 ms | ~2,800 ms |
+| Requests | 31 (9 third-party) | 25 (**zero** third-party) |
+| Worst scroll frame | 208 ms | 25 ms |
+| Janky frames per sweep | 4 | 0 |
+
+Four changes did it, and each is worth keeping.
+
+- **The map is behind a facade.** The Google embed costs about **1.5 MB across
+  16 requests** and was, on its own, the reason Largest Contentful Paint sat
+  above ten seconds. `index.html` now ships a button; `initMap()` in `script.js`
+  builds the real iframe on the first tap. Anyone who never presses it pays
+  nothing, and Get Directions and Call already cover the job without it.
+- **Fonts are self-hosted.** Google Fonts meant two extra origins and a
+  render-blocking round trip: the browser had to fetch CSS from
+  `fonts.googleapis.com` before it even learned the files lived on
+  `fonts.gstatic.com`. Three latin-subset woff2 files now sit in `assets/fonts`,
+  are preloaded from `index.html`, and let `font-src` drop to `'self'`.
+- **A mobile paint budget**, at the bottom of `styles.css`. Phones no longer
+  render the aurora, the grain, or any `backdrop-filter`. Desktop keeps all of
+  it. This is also what fixed the Visit section: two very large blurred,
+  animating, permanently promoted layers on a 9,800 px page desynced Chrome's
+  compositor badly enough that it stopped painting that section after a long
+  scroll, while layout still reported every element visible at full opacity.
+- **`will-change: transform` is gone** from the aurora. It promoted both
+  gradients to composited layers for the life of the page. Chrome promotes an
+  animating transform by itself, and only while it is animating.
+
+The logos were also re-exported at 300x148, which is still four times their
+largest display size: 117 KB to 21 KB for the pair.
+
+### Two traps in here
+
+`.frame--map` must stay `position: relative` at every breakpoint. The facade
+button inside it is `position: absolute; inset: 0`. Set the frame to `static`
+and the button escapes to `.visit__in` and covers the entire Visit section,
+hiding every word of it.
+
+To refresh the fonts, request the same `css2` URL from Google with a modern
+browser User-Agent, take the `@font-face` block whose `unicode-range` begins
+`U+0000-00FF`, and download that `woff2`:
+
+```
+curl -A "Mozilla/5.0 ... Chrome/152.0.0.0 ..."   "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Space+Grotesk:wght@300..500&display=swap"
+```
 
 ## Things to add when you have them
 

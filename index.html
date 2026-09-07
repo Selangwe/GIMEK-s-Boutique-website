@@ -32,8 +32,8 @@
   object-src 'none';
   form-action 'none';
   script-src 'self' 'sha256-hlyHGsFTw4Q2qpZdlSwoZg37M+yF2lwOLTkNZkvliKU=';
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  font-src https://fonts.gstatic.com;
+  style-src 'self' 'unsafe-inline';
+  font-src 'self';
   img-src 'self' data:;
   frame-src https://www.google.com https://maps.google.com;
   connect-src 'none';
@@ -78,18 +78,17 @@
 <meta property="og:image:alt" content="GIMEK’s Boutique, where elegance meets comfort">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Fraunces is the display voice: a soft variable serif whose thin
-     strokes stay thick enough to survive a phone screen, which is
-     the whole reason it replaced Bodoni Moda. Its true italic
-     carries every emphasis, so the page never needs a third
-     typeface. Space Grotesk handles UI and body. Only the axes
-     actually used are requested; opsz is a range because the
-     stylesheet lets font-optical-sizing pick from the font size.
-     These two URLs must stay identical to each other. -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..500&display=swap">
+<!-- Fonts are self-hosted from assets/fonts. They used to come from
+     Google Fonts, which meant two extra origins and a render-blocking
+     round trip before the browser even learned where the font files
+     were. Preloading the three latin-subset files here starts them in
+     parallel with the stylesheet instead of after it. Font preloads
+     need crossorigin even same-origin, because fonts are always
+     fetched in CORS mode. The @font-face rules are at the top of
+     styles.css; see the note there before changing any of this. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/fraunces-normal-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/fraunces-italic-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/space-grotesk-normal-latin.woff2">
 <link rel="stylesheet" href="styles.css">
 
 <!-- Scroll reveals start at opacity:0 and are switched on by
@@ -181,8 +180,8 @@
          crimson lifted to the value the dark palette uses. Both are
          decorative; the link carries the name. -->
     <a class="brand" href="#home" aria-label="GIMEK&rsquo;s Boutique, home">
-      <img class="brand__dark" src="assets/logo-dark.png" alt="" width="501" height="247">
-      <img class="brand__light" src="assets/logo.png" alt="" width="501" height="247">
+      <img class="brand__dark" src="assets/logo-dark.png" alt="" width="300" height="148">
+      <img class="brand__light" src="assets/logo.png" alt="" width="300" height="148">
     </a>
 
     <nav class="nav__links" aria-label="Primary">
@@ -216,8 +215,8 @@
     <a href="#visit">Visit Us</a>
   </nav>
   <div class="menu__foot">
-    <img class="menu__logo brand__dark" src="assets/logo-dark.png" alt="" width="501" height="247">
-    <img class="menu__logo brand__light" src="assets/logo.png" alt="" width="501" height="247">
+    <img class="menu__logo brand__dark" src="assets/logo-dark.png" alt="" width="300" height="148">
+    <img class="menu__logo brand__light" src="assets/logo.png" alt="" width="300" height="148">
     <p class="menu__tag">Where elegance meets comfort</p>
     <a href="tel:+237655695361">+237 655 69 53 61</a>
     <div class="menu__soc">
@@ -452,12 +451,23 @@
     </div>
    </div>
 
+    <!-- MAP FACADE
+         The Google embed pulls ~1.5 MB of Maps JavaScript over 16
+         requests. It was the slowest thing on the page by a wide
+         margin and the reason Largest Contentful Paint sat above ten
+         seconds on a mid-range phone. Nothing loads now until the
+         visitor asks for it, and script.js swaps in the real iframe on
+         the first tap. The Get Directions and Call buttons above
+         already cover the job without an embed, so with JavaScript off
+         this degrades to a labelled panel and those links. -->
     <figure class="frame frame--map reveal">
-      <iframe
-        src="https://www.google.com/maps?cid=1659824850323867051&amp;output=embed"
-        title="Map showing GIMEK’s Boutique, Rue de Kondengui, Yaoundé"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <button class="mapfx" id="map-load" type="button"
+              data-map="https://www.google.com/maps?cid=1659824850323867051&amp;output=embed"
+              data-title="Map showing GIMEK’s Boutique, Rue de Kondengui, Yaoundé">
+        <svg class="ico mapfx__pin" aria-hidden="true"><use href="#i-pin"/></svg>
+        <span class="mapfx__where">Rue de Kondengui, Yaoundé</span>
+        <span class="mapfx__go">Show the map</span>
+      </button>
     </figure>
   </div>
 </section>
