@@ -50,7 +50,7 @@ What the policy allows, and why each entry has to be there:
 |---|---|
 | `script-src 'self' 'sha256-…'` | `script.js`, plus the one inline theme script |
 | `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com` | `styles.css`, the Google Fonts stylesheet, and the eight `style="--d:…"` attributes in the hero |
-| `font-src https://fonts.gstatic.com` | the Bodoni Moda and Space Grotesk files |
+| `font-src https://fonts.gstatic.com` | the Fraunces and Space Grotesk files |
 | `img-src 'self' data:` | photos in `assets/`, plus the inline SVG noise texture in `styles.css` |
 | `frame-src https://www.google.com https://maps.google.com` | the map embed in the Visit section |
 | `connect-src 'none'` | the site makes no network calls at all |
@@ -102,18 +102,43 @@ broken image.
 
 ## Design notes
 
-- **Type**: **Bodoni Moda** (display) + **Space Grotesk** (UI and body), from
-  Google Fonts with local serif / sans fallbacks. Bodoni is a high-contrast
-  fashion serif whose hairlines only survive at large optical sizes, which is
-  exactly where it is set (`opsz` 96 on headlines). Emphasis inside a headline is
-  Bodoni's *italic* in crimson — the same family, never a third typeface. Space
-  Grotesk carries eyebrows, buttons and labels in wide-tracked caps, which is
-  where the "2026" register comes from.
-- **Palette**: taken from `assets/logo.png`, sampled rather than guessed. Crimson
-  `#941004`, pure black, warm white. The site is **dark-first**: on a near-black
-  ground crimson stops being ink and becomes light, so it glows, rim-lights the
-  photo frames, and draws the hairlines. One accent, no second colour. All
-  colours are semantic CSS variables at the top of `styles.css`.
+- **Type**: **Fraunces** (display) + **Space Grotesk** (UI and body), from Google
+  Fonts with local serif / sans fallbacks. Fraunces replaced Bodoni Moda, which
+  was the wrong tool for this job: a Didone's thin strokes are hairlines by
+  design, so the headings got *less* legible the smaller the screen, which is
+  exactly backwards for a site most people reach from Instagram on a phone.
+  Fraunces carries far more weight in the thin strokes and holds up at any size.
+  Headings are set at weight 300 with `font-optical-sizing: auto` — do **not**
+  re-pin `font-variation-settings: "opsz"`, because Fraunces' optical axis runs
+  9..144 and the automatic mapping from font-size is what stops the small
+  headings inheriting a display cut. Emphasis inside a headline is Fraunces'
+  *italic* in crimson — the same family, never a third typeface. Space Grotesk
+  carries eyebrows, buttons and labels in wide-tracked caps.
+- **Line balancing**: Fraunces sets wider than the Bodoni it replaced, which left
+  a single stranded word on the last line of several headings ("can", "Style").
+  `text-wrap: balance` on `.h2` and `.hero__h1 span` fixes all of them at once.
+  Browsers without it fall back to the ordinary ragged break.
+- **A note on `Fashion.ttf`**: a font by that name was trialled for the headings
+  and rejected. It is caps-only (no true lowercase), it has no `'`, no `é` and no
+  `&`, so "GIMEK's" and "Yaoundé" both break, it has no italic, and its own
+  `fsType` bits are set to *Preview & Print only*, which does not permit web
+  embedding. It must not be committed or referenced.
+- **Palette**: the reds are sampled from the logo files and are **not** tuned to
+  the palette, because the logo is not being reworked: `#E8442F` is the exact red
+  in `assets/logo-dark.png` and `#941004` the exact red in `assets/logo.png`.
+  Everything around them is warm. Dark, the default, is a **plum-black**
+  (`#141011`) rather than a neutral near-black; light is **blush and ivory**
+  (`#FBF8F6` ground, `#2B2224` plum-brown ink). They are the same warmth at
+  opposite ends of the lightness range.
+  The softness comes from the ground and from **restraint**, never from
+  desaturating the brand: the glow tokens are half what they were, the aurora is
+  pulled back, and `text-shadow` survives on only the two largest headings.
+  Crimson stopped being ambient light spilling over the page and went back to
+  being an accent. One accent, no second colour. All colours are semantic CSS
+  variables at the top of `styles.css`.
+- **`theme-color` lives in two files.** The meta tag in `index.html` and the two
+  literals in `paint()` in `script.js` must both equal `--bg` for their theme, or
+  the browser chrome desyncs from the page.
 - **Dark by default, light on request**. Dark is the brand, so it is the default
   for every visitor regardless of their OS setting — `prefers-color-scheme` is
   deliberately *not* used to pick the theme. The nav toggle switches to a paper
@@ -158,5 +183,30 @@ door is actually open. The collection section is a **showcase**, not a shop.
 - Real photography. 16 slots are still empty and showing placeholders; the
   filenames, shapes and shooting guidance are in `assets/README.md`. Note the
   shapes for Accessories and Beauty changed to landscape in this build.
-- `assets/og-image.jpg` at exactly 1200 x 630, for the social-share card.
-- The real domain, in `index.html`, `robots.txt` and `sitemap.xml`.
+- The real domain, in `index.html`, `robots.txt` and `sitemap.xml`. This is the
+  one remaining launch blocker: until it is done the canonical URL, the `og:`
+  tags, the structured data and the sitemap all point at a domain that does not
+  resolve, so shared links show no preview card and the sitemap is rejected.
+- A photographic `assets/og-image.jpg`. There is one there now, generated from
+  the logo on the brand ground at exactly 1200 x 630, so the social card is not
+  broken; replace it with a real photograph when you have one.
+
+## Accessibility notes
+
+Both overlays — the mobile menu and the gallery lightbox — set `inert` on the
+rest of the page while they are open, so Tab cannot walk out of the overlay and
+into content the visitor cannot see. The lightbox additionally wraps Tab across
+its own three buttons **in DOM order** (prev, next, close). Listing them in any
+other order puts the wrap-around on the wrong end and focus escapes on the first
+Tab.
+
+`[hidden]` is forced to `display: none` with `!important` near the top of
+`styles.css`. The script hides the lightbox arrows with `.hidden = true` when
+there is only one photo, and `.lb__btn` sets `display: grid`; an author rule
+beats the browser's own `[hidden]` rule regardless of specificity, so without
+that line the arrows stayed visible and clickable.
+
+The opening-hours pill ships as a neutral "Monday to Saturday, 8 AM to 10 PM"
+with the `is-idle` class. `initStatus()` replaces it with the live Open/Closed
+state. It used to ship asserting "Open now", which was a false statement to
+anyone whose JavaScript had not run, at any hour of any day.
