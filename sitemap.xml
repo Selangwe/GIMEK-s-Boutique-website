@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GIMEK's Boutique sitemap.
+
+  This is a single-page site, so there is exactly one URL. The
+  section anchors (#shop, #about, #gallery, #visit) are NOT listed:
+  fragments are not separate documents and listing them is a known
+  way to get a sitemap ignored.
+
+  BEFORE GOING LIVE: replace gimeksboutique.cm with the real domain.
+  The same string appears in index.html and robots.txt.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://gimeksboutique.cm/</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

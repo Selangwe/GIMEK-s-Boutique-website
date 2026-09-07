@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#14100D"/>
-  <rect x="5.5" y="5.5" width="53" height="53" fill="none" stroke="#C4571C" stroke-width="2"/>
+  <!-- The site's own three colours: near-black ground, crimson rule,
+       warm white monogram. Didot/Georgia italic stands in for Bodoni
+       Moda, which cannot be relied on to exist on the viewer's machine. -->
+  <rect width="64" height="64" fill="#0B0A09"/>
+  <rect x="5.5" y="5.5" width="53" height="53" fill="none" stroke="#E8442F" stroke-width="2"/>
   <text x="32" y="45" text-anchor="middle"
-        font-family="Georgia, 'Times New Roman', serif" font-style="italic"
-        font-size="38" fill="#F3EADC">G</text>
+        font-family="Didot, 'Bodoni MT', Georgia, 'Times New Roman', serif" font-style="italic"
+        font-size="38" fill="#F4F1ED">G</text>
 </svg>

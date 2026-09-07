@@ -1,0 +1,9 @@
+# GIMEK's Boutique — Rue de Kondengui, Yaoundé
+# Everything on this site is public. Nothing to hide from crawlers.
+
+User-agent: *
+Allow: /
+
+# BEFORE GOING LIVE: replace gimeksboutique.cm with the real domain.
+# The same string appears in index.html and sitemap.xml.
+Sitemap: https://gimeksboutique.cm/sitemap.xml
