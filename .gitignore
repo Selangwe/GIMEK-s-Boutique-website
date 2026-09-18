@@ -18,3 +18,21 @@ $RECYCLE.BIN/
 .vscode/
 .idea/
 *.swp
+
+# Photo sources. The page reads the slot names in assets/README.md
+# (hero-main.jpg, cat-*.jpg, gallery-*.jpg, hero-detail.mp4); these
+# are the uncompressed originals they were cut from. Kept locally
+# for re-cutting, not shipped.
+assets/IMG_1630.JPG
+assets/manniquin-homeimg01.png
+assets/manniquin-homevid01.mp4
+assets/fashion01.png
+assets/bagsimg01.png
+assets/shoesimg01.png
+assets/beauty01.png
+assets/shop02.png
+assets/shop&gallery04.png
+assets/gallery01.png
+assets/gallery02.png
+assets/gallery03.png
+assets/gallery05.png

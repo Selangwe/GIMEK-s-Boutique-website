@@ -58,6 +58,16 @@
       if (img.complete) { (img.naturalWidth === 0 ? miss : hit)(); }
       else if (tile) { tile.disabled = true; }   // optimistic default
     });
+
+    /* The hero's small frame is a short muted loop. Same rule as
+       the photos: if the file is missing the placeholder shows.
+       Under prefers-reduced-motion it holds on its first frame. */
+    var vids = document.querySelectorAll('video[data-slot]');
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    Array.prototype.forEach.call(vids, function (v) {
+      v.addEventListener('error', function () { v.setAttribute('data-missing', ''); });
+      if (still) { v.removeAttribute('autoplay'); v.pause(); }
+    });
   }
 
   /* ── 2. Theme ────────────────────────────────────────────
