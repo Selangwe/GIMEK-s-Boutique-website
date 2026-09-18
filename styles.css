@@ -129,6 +129,7 @@
   --ease:cubic-bezier(.22,.61,.36,1);
   --ease-out:cubic-bezier(.16,1,.3,1);
   --radius:0;
+  --radius-img:.9rem;   /* photos and the hero clip only; controls stay square */
 }
 
 /* ── light mode, opt-in only ─────────────────────────────
@@ -397,7 +398,7 @@ button{font:inherit;color:inherit}
    ════════════════════════════════════════════════════════ */
 .frame,.tile{
   position:relative;margin:0;overflow:hidden;background:var(--ph-1);
-  border-radius:var(--radius);
+  border-radius:var(--radius-img);
   box-shadow:inset 0 0 0 1px var(--line-soft);
   transition:box-shadow .6s var(--ease);
 }
@@ -788,7 +789,7 @@ button{font:inherit;color:inherit}
 .lb[hidden]{display:none}
 .lb.is-open{opacity:1}
 .lb__img{
-  max-width:min(100%,72rem);max-height:82vh;width:auto;height:auto;object-fit:contain;
+  max-width:min(100%,72rem);max-height:82vh;width:auto;height:auto;object-fit:contain;border-radius:var(--radius-img);
   box-shadow:0 0 120px -40px var(--glow),0 40px 100px -60px #000;
   transform:scale(.97);transition:transform .5s var(--ease-out);
 }
