@@ -980,9 +980,9 @@ button{font:inherit;color:inherit}
   .hero__in{grid-template-columns:1fr;gap:3.5rem}
   .hero__art{max-width:26rem;margin:0 auto}
   /* The overlap survives, but the offset has to stay inside the
-     viewport: --pad is only 1.25rem down here, so anything larger
-     hangs the frame off the right edge. */
-  .frame--small{left:auto;right:-.9rem;bottom:-1.4rem;width:40%;outline-width:6px}
+     viewport: --pad is only 1.25rem down here, and the 6px outline
+     needs its own clearance, so the frame stops short of the edge. */
+  .frame--small{left:auto;right:-.5rem;bottom:-1.4rem;width:40%;outline-width:6px}
   .hero__cue{display:none}
 
   .values__grid{grid-template-columns:1fr}

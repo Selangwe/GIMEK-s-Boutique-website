@@ -61,12 +61,38 @@
 
     /* The hero's small frame is a short muted loop. Same rule as
        the photos: if the file is missing the placeholder shows.
-       Under prefers-reduced-motion it holds on its first frame. */
+       Playback is driven from here rather than the autoplay
+       attribute: phones defer or refuse autoplay (offscreen, Low
+       Power Mode, Data Saver), so the clip plays only while it is
+       on screen, pauses when scrolled past, and if the first play()
+       is refused it retries on the visitor's first touch. Under
+       prefers-reduced-motion it holds on its poster. */
     var vids = document.querySelectorAll('video[data-slot]');
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     Array.prototype.forEach.call(vids, function (v) {
       v.addEventListener('error', function () { v.setAttribute('data-missing', ''); });
-      if (still) { v.removeAttribute('autoplay'); v.pause(); }
+      if (still) return;
+
+      var armed = false;
+      var tryPlay = function () {
+        var p = v.play();
+        if (p && p.catch) {
+          p.catch(function () {
+            if (armed) return;
+            armed = true;
+            var once = { once: true, passive: true };
+            document.addEventListener('touchend', tryPlay, once);
+            document.addEventListener('pointerdown', tryPlay, once);
+          });
+        }
+      };
+
+      if (!('IntersectionObserver' in window)) { tryPlay(); return; }
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) tryPlay(); else v.pause();
+        });
+      }, { threshold: 0.25 }).observe(v);
     });
   }
 

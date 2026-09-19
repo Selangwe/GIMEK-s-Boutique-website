@@ -10,6 +10,7 @@ takes over automatically. No code changes needed.
 | File | Where it appears | Best shape |
 |---|---|---|
 | `hero-main.jpg` | Hero, main portrait | Portrait, tall (4:4.9) |
+| `hero-detail.jpg` | Poster for the clip below: its first frame. Shows until the clip plays, and instead of it when a phone refuses autoplay. | Same size as the clip |
 | `hero-detail.mp4` | Hero, small overlapping square — a short muted loop, H.264. The file is the clip **followed by itself reversed**, so the plain `loop` attribute plays start → end → start with no jump. | Portrait, 540 px wide, under ~1 MB |
 | `cat-fashion.jpg` | Collection, Fashion (wide lead cell) | Landscape (16:9.6) |
 | `cat-bags.jpg` | Collection, Bags | Portrait (3:3.7) |
